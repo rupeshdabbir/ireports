@@ -55,6 +55,7 @@ app.get("/contacts", function(req, res) {
 });
 
 app.post("/contacts", function(req, res) {
+  console.log()
   var newContact = req.body;
   newContact.createDate = new Date();
 
@@ -67,6 +68,25 @@ app.post("/contacts", function(req, res) {
       handleError(res, err.message, "Failed to create new contact.");
     } else {
       res.status(201).json(doc.ops[0]);
+    }
+  });
+});
+
+app.post("/markers", function(req, res) {
+  var newContact = req.body;
+  newContact.createDate = new Date();
+
+  db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to create new contact.");
+    } else {
+        db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
+          if (err) {
+            handleError(res, err.message, "Failed to get contacts.");
+          } else {
+            res.status(200).json(docs);  
+          }
+        });
     }
   });
 });

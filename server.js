@@ -78,8 +78,8 @@ app.post("/login", function(req, res) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
       // res.status(200).json(docs);  
-      console.log("Docs I got"+docs);
-      console.log("password I got"+req.body);
+      console.log("Docs I got"+JSON.stringify(docs));
+      console.log("password I got"+JSON.stringify(req.body));
       if(docs.password === req.body.password){
         res.status(200);
       } else {

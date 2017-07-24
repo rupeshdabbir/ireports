@@ -69,19 +69,16 @@ app.get("/markers", function(req, res) {
 /*Login*/
 app.post("/login", function(req, res) {
 
-  user: req.body.username,
-  password: req.body.password
-
   if (!(req.body.username || req.body.password)) {
     handleError(res, "Invalid user input", "Must provide a username, password.", 400);
   }
 
-  db.collection(CONTACTS_COLLECTION).find({ username: user }).toArray(function(err, docs) {
+  db.collection(CONTACTS_COLLECTION).find({ username: req.body.username }).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
       // res.status(200).json(docs);  
-      if(docs.password === password){
+      if(docs.password === req.body.password){
         res.status(200);
       } else {
         handleError(res, "Invalid user input", "Must provide a username, password or email.", 400);

@@ -5,6 +5,7 @@ var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
 var CONTACTS_COLLECTION = "location";
+var LOGIN_COLLECTION = "login";
 
 var app = express();
 app.use(express.static(__dirname + "/public"));
@@ -63,6 +64,55 @@ app.get("/markers", function(req, res) {
     }
   });
 });
+
+
+/*Login*/
+app.post("/login", function(req, res) {
+
+  user: req.body.username,
+  password: req.body.password
+
+  if (!(req.body.username || req.body.password)) {
+    handleError(res, "Invalid user input", "Must provide a username, password.", 400);
+  }
+
+  db.collection(CONTACTS_COLLECTION).find({ username: user }).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get contacts.");
+    } else {
+      // res.status(200).json(docs);  
+      if(docs.password === password){
+        res.status(200);
+      } else {
+        handleError(res, "Invalid user input", "Must provide a username, password or email.", 400);
+      }
+    }
+  });
+});
+
+
+app.post("/signup", function(req, res) {
+  var newUser = {
+    username: req.body.username,
+    password: req.body.password,
+    email: req.body.email
+  }
+  newUser.createDate = new Date();
+
+  if (!(req.body.username || req.body.password || req.body.email)) {
+    handleError(res, "Invalid user input", "Must provide a username, password or email.", 400);
+  }
+
+  db.collection(LOGIN_COLLECTION).insertOne(newUser, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to do login.");
+    } else {
+      res.status(201).json(doc.ops[0]);
+    }
+  });
+});
+
+
 
 app.post("/contacts", function(req, res) {
   console.log()

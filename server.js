@@ -67,6 +67,14 @@ app.get("/markers", function(req, res) {
 app.post("/contacts", function(req, res) {
   console.log()
   var newContact = req.body;
+  var newMarker = {
+    latlng: {
+      latitude: req.body.latitude,
+      longitude: req.body.longitude
+    },
+    title: req.body.title,
+    description: req.body.description
+  }
   newContact.createDate = new Date();
 
   // if (!(req.body.firstName || req.body.lastName)) {

@@ -91,10 +91,18 @@ app.post("/contacts", function(req, res) {
 });
 
 app.post("/markers", function(req, res) {
-  var newContact = req.body;
-  newContact.createDate = new Date();
+  // var newContact = req.body;
+  // newContact.createDate = new Date();
+  var newMarker = {
+    latlng: {
+      latitude: req.body.latitude,
+      longitude: req.body.longitude
+    },
+    title: req.body.title,
+    description: req.body.description
+  }
 
-  db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
+  db.collection(CONTACTS_COLLECTION).insertOne(newMarker, function(err, doc) {
     if (err) {
       handleError(res, err.message, "Failed to create new contact.");
     } else {

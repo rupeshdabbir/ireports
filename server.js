@@ -66,7 +66,7 @@ app.get("/markers", function(req, res) {
 
 app.post("/contacts", function(req, res) {
   console.log()
-  var newContact = req.body;
+  // var newContact = req.body;
   var newMarker = {
     latlng: {
       latitude: req.body.latitude,

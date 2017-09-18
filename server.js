@@ -10,6 +10,9 @@ var LOGIN_COLLECTION = "login";
 var app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
+require('dotenv').config();
+
+
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
@@ -73,15 +76,15 @@ app.post("/login", function(req, res) {
     handleError(res, "Invalid user input", "Must provide a username, password.", 400);
   }
 
-  db.collection(CONTACTS_COLLECTION).find({ username: req.body.username }).toArray(function(err, docs) {
+  db.collection(LOGIN_COLLECTION).find({ username: req.body.username }).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
       // res.status(200).json(docs);  
-      console.log("Docs I got"+JSON.stringify(docs));
-      console.log("password I got"+JSON.stringify(req.body));
-      if(docs.password === req.body.password){
-        res.status(200);
+      // console.log("Docs I got"+JSON.stringify(docs));
+      // console.log("password I got"+JSON.stringify(req.body));
+      if(docs[0].password === req.body.password){
+        res.status(200).json("Success");
       } else {
         handleError(res, "Invalid user input", "Must provide a username, password or email.", 400);
       }
@@ -91,12 +94,16 @@ app.post("/login", function(req, res) {
 
 
 app.post("/signup", function(req, res) {
+
+  console.log(req.body);
   var newUser = {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email
   }
   newUser.createDate = new Date();
+
+  // console.log(JSON.stringify(newUser));
 
   if (!(req.body.username || req.body.password || req.body.email)) {
     handleError(res, "Invalid user input", "Must provide a username, password or email.", 400);
